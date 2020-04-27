@@ -5,11 +5,11 @@ RUN opam switch create -y 4.08.1+musl+static+flambda
 COPY --chown=opam:opam . /home/opam/app
 WORKDIR /home/opam/app
 RUN eval $(opam env) && \
-	make bmtune_static && \
-	strip bmtune_static
+	make _build/bmtune_static && \
+	strip _build/bmtune_static
 
 FROM scratch
 
-COPY --from=build /home/opam/app/bmtune_static /bmtune
+COPY --from=build /home/opam/app/_build/bmtune_static /bmtune
 
 ENTRYPOINT ["/bmtune"]
