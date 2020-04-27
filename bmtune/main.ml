@@ -15,6 +15,7 @@ let parse_core_list s =
         (* process one number or range "x-y" from a list *)
         let process_elt elt =
                 match (String.split_on_char '-' elt) with
+                | [""] -> []
                 | [a] -> [int_of_string a]
                 | a::b::[] -> gen_seq (int_of_string a) (int_of_string b)
                 | _ -> raise (Failure "parsing error, invalid range")
@@ -54,7 +55,7 @@ let () =
         (* isolcpus *)
         let isol_cores = parse_core_list (read_file "/sys/devices/system/cpu/isolated") in
         if (Cores.is_empty isol_cores) then begin
-                printf "no isolated cores cound (check the isolcpus kernel parameter)";
+                printf "no isolated cores found (check the isolcpus kernel parameter)\n";
                 exit (-1)
         end;
         printf "Isolated cores: ";
@@ -62,14 +63,19 @@ let () =
         printf "\n";
 
         (* nohz_full *)
-        let nohz_full_cores = parse_core_list (read_file "/sys/devices/system/cpu/nohz_full") in
+        let nohz_full_cores = 
+                let f = "/sys/devices/system/cpu/nohz_full" in
+                if (Sys.file_exists f) then begin
+                        parse_core_list (read_file f)
+                end else
+                        Cores.empty
+        in
         printf "nohz_full: ";
-
         if (not (Cores.subset isol_cores nohz_full_cores)) then begin
                 printf "failed\n";
                 printf "WARNING: not all isolated cores have nohz_full enabled. Timer interrupts on the isolated cores could affect the results.\n"
         end else begin
-                printf "passed\n";
+                printf "passed\n"
         end;
 
         (* check smt/ht *)
@@ -90,7 +96,7 @@ let () =
         printf "IRQ interrupt assignment: \n";
         let irq_path = "/proc/irq" in
         (* some IRQs can't be reassigned *)
-        let ignore_irqs = [0;2;130] in
+        let ignore_irqs = [0;2;126;130] in
         Array.iter (fun irq ->
                 (* /proc/irq/*/smp_affinity_list *)
                 let f = Filename.concat (Filename.concat irq_path irq) "smp_affinity_list" in
