@@ -1,0 +1,28 @@
+opam-version: "2.0"
+name: "bmtune"
+maintainer: "Magnus Skjegstad <magnus@skjegstad.com>"
+authors: "Magnus Skjegstad <magnus@skjegstad.com>"
+homepage: "https://github.com/magnuss/bmtune"
+bug-reports: "https://github.com/magnuss/bmtune/issues/"
+dev-repo: "git+https://github.com/magnuss/bmtune.git"
+license: "ISC"
+
+build: [
+  ["dune" "subst"] {pinned}
+  ["dune" "build" "-p" name "-j" jobs]
+]
+
+depends: [
+  "ocaml" {>= "4.06.0"}
+  "dune"  {>= "1.0"}
+]
+synopsis: "Experimental utility to tune the Linux kernel for benchmarks"
+description: """
+Provides the tool `bmtune`, which will attempt to configure the kernel to run
+benchmarks with as little noise as possible. Among other things, the tool will
+verify that at least one CPU is isolated with isolcpu, that IRQs are not
+scheduled on this core and that the CPU scaling governor is set to performance.
+
+`bmtune` can be linked statically and executed in a "scratch" Docker container,
+which makes it suitable for including as a LinuxKit onboot service.
+"""

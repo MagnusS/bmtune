@@ -1,24 +1,30 @@
-.PHONY: all clean static
+.PHONY: all clean static static_docker push tag
 RANDOM := $(shell bash -c 'echo $$RANDOM')
 CID := "bmtune_static_$(RANDOM)"
 
-_build/bmtune: src/main.ml
-	mkdir -p _build
-	ocamlc src/main.ml -o _build/bmtune
+all:
+	dune build
 
-_build/bmtune_static: src/main.ml
-	mkdir -p _build
-	ocamlopt -ccopt -static src/main.ml -o _build/bmtune_static
+static:
+	@echo NOTE: This target requires a compiler switch with musl-static, see also the static_docker target
+	@echo
+	dune build src/bmtune_static.exe
 
-all: _build/bmtune
-
-bmtune_static_docker:
+static_docker:
+	@echo Building _build/bmtune_static.exe in docker
+	@echo
 	mkdir -p _build
-	tar cv src/main.ml Dockerfile Makefile | docker build -t bmtune:latest -f Dockerfile -
+	tar cv src/* Dockerfile Makefile *.opam dune-project | docker build -t bmtune:latest -f Dockerfile -
 	docker create --name $(CID) bmtune:latest
 	docker cp $(CID):/bmtune _build/bmtune_static
 	docker rm $(CID)
+	@echo Static executable copied to _build/bmtune_static
+
+tag: static_docker
+	docker tag bmtune:latest ssungam/bmtune:latest
+
+push: tag
+	docker push ssungam/bmtune:latest
 
 clean:
-	rm -rf _build
-	rm -f src/main.cmi src/main.cmo
+	dune clean

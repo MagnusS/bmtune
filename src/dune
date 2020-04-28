@@ -1,0 +1,17 @@
+(library
+	(name main)
+	(modules main)
+)
+
+(executable
+	(public_name bmtune)
+	(libraries main)
+	(modules bmtune)
+)
+
+(executable
+	(name bmtune_static)
+	(libraries main)
+	(modules bmtune_static)
+	(link_flags (-ccopt -static))
+)

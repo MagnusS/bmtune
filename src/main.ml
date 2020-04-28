@@ -49,7 +49,7 @@ let string_of_cores c =
         let m = Cores.fold (fun x a -> string_of_int x::a) c [] in
         String.concat "," (List.rev m)
 
-let () =
+let configure () =
         printf "-- checking and preparing system for benchmarking ---\n";
 
         (* isolcpus *)
