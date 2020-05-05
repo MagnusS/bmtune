@@ -8,6 +8,10 @@ To use `bmtune`, boot the kernel with `isolcpus`, `nohz_full`, as well as other
 optimisations that may be needed (e.g. `rcu_nocbs`, `rcu_nocb_poll` and
 parameters to disable power saving states).
 
+The `ocaml_bench_scripts` [documentation](https://github.com/ocaml-bench/ocaml_bench_scripts/#notes-on-hardware-and-os-settings-for-linux-benchmarking) contains more details on what needs
+to be configured and why.
+
+
 When `bmtune` is executed, it will (without warning)
 
 	1. Check that at least one core is isolated
@@ -18,6 +22,7 @@ When `bmtune` is executed, it will (without warning)
 `bmtune` is designed to run on a minimal system and will currently not interact
 with other running services, such as `irqbalance` or daemons that control power
 saving. These will have to be configured/disabled independently.
+
 
 A prebuilt image is a available on Docker hub. To use it as a LinuxKit onboot
 service:
