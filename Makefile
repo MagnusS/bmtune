@@ -28,3 +28,6 @@ push: tag
 
 clean:
 	dune clean
+
+fmt:
+	dune build @fmt --auto-promote

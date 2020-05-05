@@ -1,2 +1,1 @@
-let () =
-        Main.configure ()
+let () = Main.configure ()
