@@ -8,13 +8,13 @@ all:
 static:
 	@echo NOTE: This target requires a compiler switch with musl-static, see also the static_docker target
 	@echo
-	dune build src/bmtune_static.exe
+	dune build --profile static
 
 static_docker:
 	@echo Building _build/bmtune_static.exe in docker
 	@echo
 	mkdir -p _build
-	tar cv src/* Dockerfile Makefile *.opam dune-project | docker build -t bmtune:latest -f Dockerfile -
+	tar cv src/* Dockerfile Makefile *.opam dune dune-project | docker build -t bmtune:latest -f Dockerfile -
 	docker create --name $(CID) bmtune:latest
 	docker cp $(CID):/bmtune _build/bmtune_static
 	docker rm $(CID)

@@ -8,10 +8,10 @@ COPY --chown=opam:opam . /home/opam/app
 WORKDIR /home/opam/app
 RUN eval $(opam env) && \
 	make static && \
-	strip _build/default/src/bmtune_static.exe
+	strip _build/default/src/bmtune.exe
 
 FROM scratch
 
-COPY --from=build /home/opam/app/_build/default/src/bmtune_static.exe /bmtune
+COPY --from=build /home/opam/app/_build/default/src/bmtune.exe /bmtune
 
 ENTRYPOINT ["/bmtune"]
