@@ -12,4 +12,4 @@
  (libraries main)
  (modules bmtune_static)
  (link_flags
-  (-ccopt -static)))
+  (:standard -ccopt -static)))
