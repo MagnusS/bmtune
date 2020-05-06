@@ -38,6 +38,8 @@ onboot:
     command: ["/bmtune"]
 ```
 
+An example of a complete LinuxKit configuration using `bmtune` is available [here](https://github.com/MagnusS/cb-lk).
+
 ## Building
 
 The tool can be built as a command line utility or bundled in a
